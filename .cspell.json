@@ -1,0 +1,22 @@
+{
+    "language": "en",
+    "ignorePaths": ["package-lock.json", ".**"],
+    "useGitignore": true,
+    "ignoreRegExpList": [
+        "Urls",
+        "Email",
+        "RsaCert",
+        "SshRsa",
+        "Base64MultiLine",
+        "Base64SingleLine",
+        "CommitHash",
+        "CommitHashLink",
+        "CStyleHexValue",
+        "CSSHexValue",
+        "SHA",
+        "HashStrings",
+        "UnicodeRef",
+        "UUID"
+    ],
+    "words": ["Endpact"]
+}

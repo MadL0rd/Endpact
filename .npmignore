@@ -1,0 +1,8 @@
+# Игнорим всё лишнее
+src/
+node_modules/
+*.tgz
+.eslint*
+.prettier*
+.cspell.json
+*.log

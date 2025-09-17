@@ -1,0 +1,52 @@
+{
+  "name": "endpact",
+  "version": "0.1.0-alpha.0",
+  "description": "Type script api contract definition library based on zod and node fetch",
+  "homepage": "https://github.com/MadL0rd/Endpact",
+  "bugs": {
+    "url": "https://github.com/MadL0rd/Endpact/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MadL0rd/Endpact.git"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "sideEffects": false,
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "license": "Apache 2.0",
+  "author": "MadL0rd",
+  "scripts": {
+    "build": "tsup src/index.ts --dts --format esm,cjs --clean",
+    "dev": "tsup src/index.ts --dts --format esm,cjs --watch",
+    "pack": "npm run build && npm pack",
+    "release": "npm run build && npm publish --access public"
+  },
+  "peerDependencies": {
+    "zod": "^3.23.8 || ^4.0.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2",
+    "@typescript-eslint/eslint-plugin": "^8.22.0",
+    "@typescript-eslint/parser": "^8.22.0",
+    "@eslint/js": "^9.23.0",
+    "eslint": "^9.23.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-unused-imports": "^4.1.4"
+  }
+}
