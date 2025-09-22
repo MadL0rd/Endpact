@@ -404,7 +404,7 @@ export class HttpApiService<Endpoints extends Record<string, AnyHttpApiEndpointD
           }
     > {
         const paramsString = new URLSearchParams(requestDto.queryParams).toString()
-        const url = paramsString.length > 0 ? requestDto.url : `${requestDto.url}?${paramsString}`
+        const url = paramsString.length === 0 ? requestDto.url : `${requestDto.url}?${paramsString}`
 
         const abortController = new AbortController()
         const requestStartTime = Date.now()
