@@ -128,7 +128,7 @@ type HttpResponseDto = {
     statusText: string
     type: ResponseType
     headers: Record<string, string>
-    data: null | unknown
+    body: null | unknown
     receiveResponseDuration: null | number
     requestTotalDuration: null | number
 }
@@ -240,14 +240,14 @@ export class HttpApiService<Endpoints extends Record<string, AnyHttpApiEndpointD
         if (response.ok === false) {
             const expectedErrorSchema = responseSchemasByStatusCodes[response.status]
             if (expectedErrorSchema) {
-                const parseResult = expectedErrorSchema.safeParse(response.data)
+                const parseResult = expectedErrorSchema.safeParse(response.body)
                 if (parseResult.success) {
                     const result = {
                         success: false,
                         statusCode: response.status,
                         statusText: response.statusText,
                         errorType: 'EXPECTED_ERROR',
-                        data: response.data,
+                        data: response.body,
                     } as EndpointCallResultExpectedError<Endpoint>
                     this.logRequestInfo({
                         level: 'warn',
@@ -266,7 +266,7 @@ export class HttpApiService<Endpoints extends Record<string, AnyHttpApiEndpointD
                 statusText: response.statusText,
                 errorType: 'UNEXPECTED_STATUS_CODE',
                 error: Error('UNEXPECTED_STATUS_CODE'),
-                originalData: response.data,
+                originalData: response.body,
             }
             this.logRequestInfo({
                 level: 'error',
@@ -288,7 +288,7 @@ export class HttpApiService<Endpoints extends Record<string, AnyHttpApiEndpointD
                   type: 'DEFAULT',
                   schema: responseSchemasByStatusCodes.ok,
               }
-        const parseResult = targetResponseParser.schema!.safeParse(response.data)
+        const parseResult = targetResponseParser.schema!.safeParse(response.body)
         if (parseResult.success === false) {
             const result: EndpointCallResultFailure = {
                 success: false,
@@ -296,7 +296,7 @@ export class HttpApiService<Endpoints extends Record<string, AnyHttpApiEndpointD
                 statusText: response.statusText,
                 errorType: 'INVALID_RESPONSE',
                 error: parseResult.error,
-                originalData: response.data,
+                originalData: response.body,
             }
             this.logRequestInfo({
                 level: 'error',
@@ -463,7 +463,7 @@ export class HttpApiService<Endpoints extends Record<string, AnyHttpApiEndpointD
             statusText: response.result.statusText,
             type: response.result.type,
             headers: headersRecord,
-            data: null,
+            body: null,
             receiveResponseDuration: Date.now() - requestStartTime,
             requestTotalDuration: null,
         }
@@ -492,7 +492,7 @@ export class HttpApiService<Endpoints extends Record<string, AnyHttpApiEndpointD
                 response: responseDto,
             }
         }
-        responseDto.data = dataFetching.result
+        responseDto.body = dataFetching.result
         responseDto.requestTotalDuration = Date.now() - requestStartTime
 
         return {
