@@ -18,9 +18,9 @@ export function replacerWithPath(replacer: Replacer): (this: any, key: string, v
         // which we replace with an empty string.
         const parentPath: string = pathMap.get(this) || ''
 
-        // If `this` is an array, the key is formatted as an index in square brackets,
+        // If `this` is an array, the key is formatted as square brackets,
         // otherwise as ".field".
-        const appended = Array.isArray(this) ? `[${key}]` : key ? `${key}` : ''
+        const appended = Array.isArray(this) ? '[]' : key ? `${key}` : ''
 
         // Build the full path. If no path is set for the parent, it will be empty.
         const path = [parentPath, appended].filter(Boolean).join('.')
