@@ -120,6 +120,7 @@ type HttpRequestDto = {
     headers: Record<string, string>
     body?: unknown
     timeout: number
+    stringifyBody: boolean
 }
 type HttpResponseDto = {
     ok: boolean
@@ -170,11 +171,9 @@ export class HttpApiService<Endpoints extends Record<string, AnyHttpApiEndpointD
                 [alias]: async <Endpoint extends typeof endpointOriginal>(
                     inputData: InputParams<Endpoint>
                 ): Promise<EndpointCallResult<Endpoint>> => {
-                    return this.processApiCall({
-                        alias,
-                        endpoint,
-                        inputData,
-                    }) as Promise<EndpointCallResult<Endpoint>>
+                    return this.processApiCall(alias, endpoint, inputData) as Promise<
+                        EndpointCallResult<Endpoint>
+                    >
                 },
             })
         }, {} as ApiMethods<Endpoints>)
@@ -184,14 +183,8 @@ export class HttpApiService<Endpoints extends Record<string, AnyHttpApiEndpointD
         Input,
         Responses extends ExpectedResponses,
         Endpoint extends HttpApiEndpointDto<Input, Responses>,
-    >(args: {
-        alias: string
-        endpoint: Endpoint
-        inputData: Input
-    }): Promise<EndpointCallResult<Endpoint>> {
-        const { alias, endpoint } = args
-
-        const requestDtoBuildResult = await endpoint.buildRequest(args.inputData)
+    >(alias: string, endpoint: Endpoint, inputData: Input): Promise<EndpointCallResult<Endpoint>> {
+        const requestDtoBuildResult = await endpoint.buildRequest(inputData)
 
         if (requestDtoBuildResult.success === false) {
             const result: EndpointCallResultFailure = {
@@ -224,6 +217,7 @@ export class HttpApiService<Endpoints extends Record<string, AnyHttpApiEndpointD
             headers: requestDto.headers ?? {},
             body: requestDto.body,
             timeout: requestDto.timeoutMs ?? this.config.defaultRequestTimeoutMs,
+            stringifyBody: requestDto.stringifyBody ?? true, //todo
         }
 
         const executeRequestResult = await this.executeRequest(request)
@@ -416,7 +410,9 @@ export class HttpApiService<Endpoints extends Record<string, AnyHttpApiEndpointD
                         method: requestDto.method,
                         headers: requestDto.headers,
                         body: HttpMethod.allowsBody(requestDto.method)
-                            ? JSON.stringify(requestDto.body)
+                            ? requestDto.stringifyBody
+                                ? JSON.stringify(requestDto.body)
+                                : (requestDto.body as RequestInit['body'])
                             : undefined,
                         signal: abortController.signal,
                     }).then((response) => {

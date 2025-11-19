@@ -22,14 +22,23 @@ export type HttpRequestBodyAllowedDto = {
     path: string
     queryParams?: Record<string, string>
     headers?: Record<string, string>
-    body?: unknown
     timeoutMs?: number
-}
+} & (
+    | {
+          stringifyBody: true
+          body?: RequestInit['body']
+      }
+    | {
+          stringifyBody: false
+          body?: unknown
+      }
+)
 export type HttpRequestBodyForbiddenDto = {
     method: HttpMethod.BodyForbidden
     path: string
     queryParams?: Record<string, string>
     headers?: Record<string, string>
+    stringifyBody?: false
     body?: undefined
     timeoutMs?: number
 }
