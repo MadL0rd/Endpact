@@ -110,7 +110,7 @@ type EndpointCallResultFailure =
           statusText: string
           errorType: 'UNEXPECTED_STATUS_CODE' | 'INVALID_RESPONSE'
           error: unknown
-          originalData: unknown
+          responseBody: unknown
       }
 
 type HttpRequestDto = {
@@ -266,7 +266,7 @@ export class HttpApiService<Endpoints extends Record<string, AnyHttpApiEndpointD
                 statusText: response.statusText,
                 errorType: 'UNEXPECTED_STATUS_CODE',
                 error: Error('UNEXPECTED_STATUS_CODE'),
-                originalData: response.body,
+                responseBody: response.body,
             }
             this.logRequestInfo({
                 level: 'error',
@@ -296,7 +296,7 @@ export class HttpApiService<Endpoints extends Record<string, AnyHttpApiEndpointD
                 statusText: response.statusText,
                 errorType: 'INVALID_RESPONSE',
                 error: parseResult.error,
-                originalData: response.body,
+                responseBody: response.body,
             }
             this.logRequestInfo({
                 level: 'error',
