@@ -1,6 +1,6 @@
 {
   "name": "endpact",
-  "version": "0.1.0-alpha.1",
+  "version": "0.2.0-alpha.0",
   "description": "Type script api contract definition library based on zod and node fetch",
   "homepage": "https://github.com/MadL0rd/Endpact",
   "bugs": {
