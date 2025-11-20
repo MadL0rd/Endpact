@@ -25,11 +25,11 @@ export type HttpRequestBodyAllowedDto = {
     timeoutMs?: number
 } & (
     | {
-          stringifyBody: true
+          stringifyBody?: true
           body?: RequestInit['body']
       }
     | {
-          stringifyBody: false
+          stringifyBody?: false
           body?: unknown
       }
 )
