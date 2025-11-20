@@ -11,7 +11,7 @@ export type SensitiveData = {
         /** Array of strings in format 'propLevel1.propLevel2.propLevel3' */
         bodyKeyPaths?: string[]
     }
-    result?: {
+    resultData?: {
         /** Array of strings in format 'propLevel1.propLevel2.propLevel3' */
         bodyKeyPaths?: string[]
     }
@@ -67,9 +67,9 @@ export function mergeSensitiveData(
         }
     }
 
-    if (x1?.result || x2?.result) {
-        merged.result = {
-            bodyKeyPaths: mergeArrays(x1?.result?.bodyKeyPaths, x2?.result?.bodyKeyPaths),
+    if (x1?.resultData || x2?.resultData) {
+        merged.resultData = {
+            bodyKeyPaths: mergeArrays(x1?.resultData?.bodyKeyPaths, x2?.resultData?.bodyKeyPaths),
         }
     }
 
@@ -100,10 +100,15 @@ export function buildMaskStrategy(sensitive: SensitiveData | undefined): Sensiti
     })
     sensitive.response?.bodyKeyPaths?.forEach((dataValue) => {
         sensitiveDataPaths.add(`response.body.${dataValue}`)
+        /**
+         * Needs to mask results with `errorType` 'UNEXPECTED_STATUS_CODE' | 'INVALID_RESPONSE'
+         * because it contains prop `responseBody`
+         */
+        sensitiveDataPaths.add(`result.responseBody.${dataValue}`)
     })
 
-    sensitive.result?.bodyKeyPaths?.forEach((dataValue) => {
-        sensitiveDataPaths.add(`result.body.${dataValue}`)
+    sensitive.resultData?.bodyKeyPaths?.forEach((dataValue) => {
+        sensitiveDataPaths.add(`result.data.${dataValue}`)
     })
 
     sensitive.maskStrategy?.maskFullValueOnKeyPath.forEach((fillPath) => {
