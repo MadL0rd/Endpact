@@ -46,7 +46,7 @@ pnpm add endpact zod
 
 ## Quick Start
 
-```
+```ts
 import { endpact } from "endpact"
 import { z } from "zod"
 
