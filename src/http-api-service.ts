@@ -19,6 +19,7 @@ type HttpApiServiceConstructorConfig<Endpoints extends Record<string, AnyHttpApi
     endpoints: Endpoints
     transform?: (endpoint: Endpoints[keyof Endpoints]) => AnyHttpApiEndpointDto
     defaultRequestTimeoutMs?: number
+    customFetch?: typeof fetch
     logging?: {
         name?: string
         logger?: LoggerService
@@ -32,6 +33,7 @@ type HttpApiServiceConfig = {
         name?: string
         logger?: LoggerService
     }
+    fetch: typeof fetch
 }
 
 type EndpointCallResult<Endpoint extends AnyHttpApiEndpointDto> =
@@ -160,6 +162,7 @@ export class HttpApiService<Endpoints extends Record<string, AnyHttpApiEndpointD
             baseUrl: config.baseUrl,
             defaultRequestTimeoutMs: config.defaultRequestTimeoutMs ?? 5000,
             logging: config.logging,
+            fetch: config.customFetch ?? fetch,
         }
 
         this.call = Object.entries(config.endpoints).reduce((acc, [alias, endpointOriginal]) => {
@@ -406,18 +409,20 @@ export class HttpApiService<Endpoints extends Record<string, AnyHttpApiEndpointD
         const response = await Promise.race([
             promiseRetry({
                 call: () =>
-                    fetch(url, {
-                        method: requestDto.method,
-                        headers: requestDto.headers,
-                        body: HttpMethod.allowsBody(requestDto.method)
-                            ? requestDto.stringifyBody
-                                ? JSON.stringify(requestDto.body)
-                                : (requestDto.body as RequestInit['body'])
-                            : undefined,
-                        signal: abortController.signal,
-                    }).then((response) => {
-                        return { success: true, result: response } as const
-                    }),
+                    this.config
+                        .fetch(url, {
+                            method: requestDto.method,
+                            headers: requestDto.headers,
+                            body: HttpMethod.allowsBody(requestDto.method)
+                                ? requestDto.stringifyBody
+                                    ? JSON.stringify(requestDto.body)
+                                    : (requestDto.body as RequestInit['body'])
+                                : undefined,
+                            signal: abortController.signal,
+                        })
+                        .then((response) => {
+                            return { success: true, result: response } as const
+                        }),
                 count: 3,
             }).catch((error) => {
                 return error instanceof DOMException && error.name == 'AbortError'
