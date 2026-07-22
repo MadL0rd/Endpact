@@ -130,7 +130,7 @@ type HttpResponseDto = {
     statusText: string
     type: ResponseType
     headers: Record<string, string>
-    body: null | unknown
+    body: unknown
     receiveResponseDuration: null | number
     requestTotalDuration: null | number
 }

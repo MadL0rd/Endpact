@@ -41,7 +41,7 @@ export function mergeSensitiveDataMaskStrategies(
 const mergeArrays = (array1?: string[], array2?: string[]): string[] | undefined => {
     if (!array1 && !array2) return undefined
     const result = new Set(array1 ?? [])
-    array2?.forEach(result.add, result)
+    array2?.forEach((item) => result.add(item))
     return Array.from(result)
 }
 

@@ -47,8 +47,8 @@ pnpm add endpact zod
 ## Quick Start
 
 ```ts
-import { endpact } from "endpact"
-import { z } from "zod"
+import { endpact } from 'endpact'
+import { z } from 'zod'
 
 /**
  * 1) Define endpoint schema
@@ -57,85 +57,85 @@ import { z } from "zod"
 const itemSchema = z.object({
     id: z.string(),
     name: z.string(),
-}),
+})
 export const GetItemsEndpoint = endpact.makeEndpoint.withBuildFunc({
-  buildFunc: (data: { searchText: string }) => ({
-    method: "GET" as const,
-    path: "/api/items/",
-    queryParams: {
-      limit: "10",
-      offset: "0",
-      search: data.searchText,
-    },
-    responses: {
-      ok: itemSchema.array(),
-      404: z.any().transform(() => [] as z.infer<typeof itemSchema>[]),
-    },
-  }),
-  metadata: { authType: "queryParams" } as const,
+    buildFunc: (data: { searchText: string }) => ({
+        method: 'GET' as const,
+        path: '/api/items/',
+        queryParams: {
+            limit: '10',
+            offset: '0',
+            search: data.searchText,
+        },
+        responses: {
+            ok: itemSchema.array(),
+            404: z.any().transform(() => [] as z.infer<typeof itemSchema>[]),
+        },
+    }),
+    metadata: { authType: 'queryParams' } as const,
 })
 
 /**
  * 2) Initialize service
  */
 const api = new endpact.HttpApiService({
-  baseUrl: "https://api.example.com",
-  endpoints: {
-    getItems: GetItemsEndpoint,
-  },
-  transform: (endpoint) => {
-    endpoint.addBuildMiddlewareContentType("application/json")
+    baseUrl: 'https://api.example.com',
+    endpoints: {
+        getItems: GetItemsEndpoint,
+    },
+    transform: (endpoint) => {
+        endpoint.addBuildMiddlewareContentType('application/json')
 
-    switch (endpoint.metadata.authType) {
-      case "body":
-        endpoint.addBuildMiddlewareCommonData({
-          body: { token: "some-random-string" },
-        })
-        endpoint.addSensitiveData({
-          request: { bodyKeyPaths: ["token"] },
-        })
-        break
-      case "queryParams":
-        endpoint.addBuildMiddlewareCommonData({
-          queryParams: { token: "some-random-string" },
-        })
-        endpoint.addSensitiveData({
-          request: { queryParams: ["token"] },
-        })
-        break
-    }
+        switch (endpoint.metadata.authType) {
+            case 'body':
+                endpoint.addBuildMiddlewareCommonData({
+                    body: { token: 'some-random-string' },
+                })
+                endpoint.addSensitiveData({
+                    request: { bodyKeyPaths: ['token'] },
+                })
+                break
+            case 'queryParams':
+                endpoint.addBuildMiddlewareCommonData({
+                    queryParams: { token: 'some-random-string' },
+                })
+                endpoint.addSensitiveData({
+                    request: { queryParams: ['token'] },
+                })
+                break
+        }
 
-    return endpoint
-  },
-  defaultRequestTimeoutMs: 20_000,
-  logging: {
-    name: "itemsApiService",
-    logger: console,
-  },
+        return endpoint
+    },
+    defaultRequestTimeoutMs: 20_000,
+    logging: {
+        name: 'itemsApiService',
+        logger: console,
+    },
 })
 
 /**
  * 3) Call endpoint
  * Now it's auto-exposed as api.call.getItems({ searchText: 'some search string' })
  */
-const result = await api.call.getItems({ searchText: "some search string" })
+const result = await api.call.getItems({ searchText: 'some search string' })
 
 /**
  * 4) Handle typed result
  */
 if (result.success) {
-  console.log(result.data) // typed as { id: string; name: string }[]
-} else if (result.errorType === "EXPECTED_ERROR") {
-  console.error(result)
+    console.log(result.data) // typed as { id: string; name: string }[]
+} else if (result.errorType === 'EXPECTED_ERROR') {
+    console.error(result)
 
-  // Example type hint in this branch:
-  // const result: {
-  //   success: false
-  //   statusCode: 404
-  //   statusText: string
-  //   errorType: "EXPECTED_ERROR"
-  //   data: never[]
-  // }
+    // Example type hint in this branch:
+    // const result: {
+    //   success: false
+    //   statusCode: 404
+    //   statusText: string
+    //   errorType: "EXPECTED_ERROR"
+    //   data: never[]
+    // }
 }
 ```
 

@@ -1,7 +1,7 @@
 import {
+    type HttpApiEndpoint,
     HttpEndpointRequestAgnosticDto,
     makeEndpoint,
-    type HttpApiEndpoint,
 } from './http-api-endpoint'
 
 import { HttpApiService } from './http-api-service'

@@ -2,11 +2,11 @@ import { z } from 'zod'
 import { HttpMethod, StatusCodes } from './types/http-method'
 import { Result } from './types/result'
 import {
-    SensitiveData,
-    SensitiveDataMaskStrategy,
     buildMaskStrategy,
     mergeSensitiveData,
     mergeSensitiveDataMaskStrategies,
+    SensitiveData,
+    SensitiveDataMaskStrategy,
 } from './types/sensitive-data'
 
 function randomUUID(): string {
