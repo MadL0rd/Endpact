@@ -1,0 +1,42 @@
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "ignorePatterns": ["dist", "node_modules"],
+    "plugins": ["typescript", "oxc", "import", "promise", "node"],
+    "categories": {
+        "correctness": "error"
+    },
+    "options": {
+        "typeAware": true
+    },
+    "rules": {
+        "typescript/no-for-in-array": "error",
+        "typescript/switch-exhaustiveness-check": [
+            "error",
+            {
+                "allowDefaultCaseForExhaustiveSwitch": true,
+                "considerDefaultExhaustiveForUnions": true,
+                "requireDefaultForNonUnion": true
+            }
+        ],
+        "eslint/sort-imports": [
+            "error",
+            {
+                "ignoreCase": true,
+                "ignoreDeclarationSort": true
+            }
+        ],
+        "typescript/no-unused-vars": [
+            "error",
+            {
+                "args": "none"
+            }
+        ],
+
+        "typescript/no-explicit-any": "off",
+        "typescript/no-empty-object-type": "off",
+        "typescript/no-inferrable-types": "off",
+        "typescript/no-namespace": "off",
+        "typescript/explicit-function-return-type": "off",
+        "typescript/explicit-module-boundary-types": "off"
+    }
+}
